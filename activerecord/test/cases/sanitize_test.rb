@@ -153,6 +153,14 @@ class SanitizeTest < ActiveRecord::TestCase
     assert_equal quoted_empty, bind("?", "")
   end
 
+  def test_bind_null_relation
+    quoted_nil = ActiveRecord::Base.connection.quote(nil)
+    none_posts = Post.none
+    assert_equal quoted_nil, bind("?", none_posts)
+    assert_equal " in (#{quoted_nil})", bind(" in (?)", none_posts)
+    assert_equal "foo in (#{quoted_nil})", bind("foo in (?)", none_posts)
+  end
+
   def test_bind_chars
     quoted_bambi = ActiveRecord::Base.connection.quote("Bambi")
     quoted_bambi_and_thumper = ActiveRecord::Base.connection.quote("Bambi\nand\nThumper")

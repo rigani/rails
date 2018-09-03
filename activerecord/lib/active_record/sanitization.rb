@@ -181,7 +181,9 @@ module ActiveRecord
         end
 
         def replace_bind_variable(value, c = connection)
-          if ActiveRecord::Relation === value
+          if ActiveRecord::NullRelation === value
+            "NULL"
+          elsif ActiveRecord::Relation === value
             value.to_sql
           else
             quote_bound_value(value, c)
